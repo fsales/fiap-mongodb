@@ -68,7 +68,11 @@ db.customers.replaceOne(
 ## operador
 
 > $unset = remove a field
+
 > $inc = faz incremento do valor
+
 > $push = inclusão de itens de documentos dentro de um array de um documento.
+
 > $pull = exclusão de itens de documentos dentro de um array de um documento.
+
 > $unset = remover as field de um documento
