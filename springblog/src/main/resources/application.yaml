@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: @project.name@
+    description: @project.version@
+    version: @project.description@
+
+  data:
+    mongodb:
+      uri: mongodb://localhost/blog
+      port: 27017
+
+logging:
+  pattern:
+    console: "%d{ABSOLUTE_MICROS} [%-5level] [%t] %c{1} - %msg%n"
+
+server:
+  error:
+    include-stacktrace: never # desabilitar stacktrace no json que e retornado em caso de erro
+  port: 8080

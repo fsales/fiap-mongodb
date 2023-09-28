@@ -65,6 +65,12 @@ db.customers.replaceOne(
 })
 ```
 
+## Listar colleções
+
+```shell
+show collections
+```
+
 ## operador
 
 > $unset = remove a field
