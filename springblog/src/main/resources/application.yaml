@@ -9,9 +9,24 @@ spring:
       uri: mongodb://localhost/blog
       port: 27017
 
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+
 logging:
   pattern:
     console: "%d{ABSOLUTE_MICROS} [%-5level] [%t] %c{1} - %msg%n"
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: DEBUG
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
 
 server:
   error:

@@ -142,4 +142,46 @@ public class ArtigoController {
                 .noContent()
                 .build();
     }
+
+    @GetMapping("/status-maior-data")
+    public ResponseEntity<List<Artigo>> findByStatusAndDataGreaterThan(
+            @RequestParam("status") Integer status,
+            @RequestParam("data") LocalDateTime data
+    ) {
+
+        return ResponseEntity.ok(
+                artigoService.findByStatusAndDataGreaterThan(
+                        status,
+                        data
+                )
+        );
+    }
+
+    @GetMapping("/periodo")
+    public ResponseEntity<List<Artigo>> obterArtigoPorDataHora(
+            @RequestParam("de") LocalDateTime de,
+            @RequestParam("ate") LocalDateTime ate
+    ) {
+        return ResponseEntity.ok(
+                artigoService.obterArtigoPorDataHora(
+                        de,
+                        ate
+                )
+        );
+    }
+
+    @GetMapping("/artigo-complexo")
+    public ResponseEntity<List<Artigo>> encontrarArtigoComplexo(
+            @RequestParam("status") Integer status,
+            @RequestParam("data") LocalDateTime data,
+            @RequestParam("titulo") String titulo) {
+
+        return ResponseEntity.ok(
+                artigoService.encontrarArtigoComplexo(
+                        status,
+                        data,
+                        titulo
+                )
+        );
+    }
 }
