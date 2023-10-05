@@ -2,6 +2,7 @@ package br.com.fosales.springblog.controller;
 
 import br.com.fosales.springblog.model.Artigo;
 import br.com.fosales.springblog.model.ArtigoStatusCount;
+import br.com.fosales.springblog.model.AutorTotalArtigo;
 import br.com.fosales.springblog.service.ArtigoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -241,6 +243,21 @@ public class ArtigoController {
 
         return ResponseEntity.ok(
                 artigoService.contarArtigosPorStatus()
+        );
+    }
+
+    @GetMapping("/aggregation-contar-artigo-autor-por-periodo")
+    public ResponseEntity<List<AutorTotalArtigo>> calularTotalArtigosAutorPorPeriodo(
+            @RequestParam("dataInicio") LocalDate dataInicio,
+
+            @RequestParam("dataFim") LocalDate dataFim
+    ) {
+
+        return ResponseEntity.ok(
+                artigoService.calularTotalArtigosAutorPorPeriodo(
+                        dataInicio,
+                        dataFim
+                )
         );
     }
 }

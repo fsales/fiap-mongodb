@@ -2,9 +2,11 @@ package br.com.fosales.springblog.service;
 
 import br.com.fosales.springblog.model.Artigo;
 import br.com.fosales.springblog.model.ArtigoStatusCount;
+import br.com.fosales.springblog.model.AutorTotalArtigo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -60,4 +62,7 @@ public interface ArtigoService {
     List<Artigo> findByTexto(String searchTerm);
 
     List<ArtigoStatusCount> contarArtigosPorStatus();
+
+    List<AutorTotalArtigo> calularTotalArtigosAutorPorPeriodo(LocalDate dataInicio,
+                                                              LocalDate dataFim);
 }
