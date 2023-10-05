@@ -1,6 +1,9 @@
 package br.com.fosales.springblog.service;
 
 import br.com.fosales.springblog.model.Artigo;
+import br.com.fosales.springblog.model.ArtigoStatusCount;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,4 +50,14 @@ public interface ArtigoService {
     List<Artigo> encontrarArtigoComplexo(Integer status,
                                          LocalDateTime data,
                                          String titulo);
+
+    Page<Artigo> listaArtigos(Pageable pageable);
+
+    List<Artigo> findByStatusOrderByTituloAsc(Integer status);
+
+    List<Artigo> obterArtigoPorStatusComOrdenacao(Integer status);
+
+    List<Artigo> findByTexto(String searchTerm);
+
+    List<ArtigoStatusCount> contarArtigosPorStatus();
 }

@@ -1,8 +1,12 @@
 package br.com.fosales.springblog.controller;
 
 import br.com.fosales.springblog.model.Artigo;
+import br.com.fosales.springblog.model.ArtigoStatusCount;
 import br.com.fosales.springblog.service.ArtigoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -182,6 +186,61 @@ public class ArtigoController {
                         data,
                         titulo
                 )
+        );
+    }
+
+    @GetMapping("/pagina-artigo")
+    public ResponseEntity<Page<Artigo>> listaArtigos(
+            @PageableDefault Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                artigoService.listaArtigos(
+                        pageable
+                )
+        );
+    }
+
+    @GetMapping("/status-ordenado")
+    public ResponseEntity<List<Artigo>> findByStatusOrderByTituloAsc(
+            @RequestParam("status") Integer status
+    ) {
+
+        return ResponseEntity.ok(
+                artigoService.findByStatusOrderByTituloAsc(
+                        status
+                )
+        );
+    }
+
+    @GetMapping("/status-query-ordenado")
+    public ResponseEntity<List<Artigo>> obterArtigoPorStatusComOrdenacao(
+            @RequestParam("status") Integer status
+    ) {
+
+        return ResponseEntity.ok(
+                artigoService.obterArtigoPorStatusComOrdenacao(
+                        status
+                )
+        );
+    }
+
+    @GetMapping("/busca-texto")
+    public ResponseEntity<List<Artigo>> findByTexto(
+            @RequestParam("searchTerm") String searchTerm
+    ) {
+
+        return ResponseEntity.ok(
+                artigoService.findByTexto(
+                        searchTerm
+                )
+        );
+    }
+
+    @GetMapping("/aggregation-contar-artigo")
+    public ResponseEntity<List<ArtigoStatusCount>> contarArtigosPorStatus() {
+
+        return ResponseEntity.ok(
+                artigoService.contarArtigosPorStatus()
         );
     }
 }

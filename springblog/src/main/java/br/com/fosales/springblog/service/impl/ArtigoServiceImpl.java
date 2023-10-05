@@ -1,15 +1,21 @@
 package br.com.fosales.springblog.service.impl;
 
 import br.com.fosales.springblog.model.Artigo;
+import br.com.fosales.springblog.model.ArtigoStatusCount;
 import br.com.fosales.springblog.model.Autor;
 import br.com.fosales.springblog.repository.ArtigoRepository;
 import br.com.fosales.springblog.repository.AutorRepository;
 import br.com.fosales.springblog.service.ArtigoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -162,6 +168,71 @@ public class ArtigoServiceImpl implements ArtigoService {
         Query query = new Query(criteria);
 
         return mongoTemplate.find(query, Artigo.class);
+    }
+
+    @Override
+    public Page<Artigo> listaArtigos(Pageable pageable) {
+        Sort sort = Sort
+                .by("titulo")
+                .ascending();
+        Pageable paginacao = PageRequest
+                .of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        sort
+                );
+
+
+        return artigoRepository.findAll(paginacao);
+    }
+
+    @Override
+    public List<Artigo> findByStatusOrderByTituloAsc(Integer status) {
+        return artigoRepository.findByStatusOrderByTituloAsc(status);
+    }
+
+    @Override
+    public List<Artigo> obterArtigoPorStatusComOrdenacao(Integer status) {
+        return artigoRepository.obterArtigoPorStatusComOrdenacao(status);
+    }
+
+    @Override
+    public List<Artigo> findByTexto(String searchTerm) {
+        // requisistos: adicinar a anotaçaõ @TextIndexed e criar index (db.artigo.createIndex({texto:"text"})).
+        TextCriteria criteria = TextCriteria
+                .forDefaultLanguage()
+                .matchingPhrase(searchTerm);
+
+        Query query = TextQuery
+                .queryText(criteria)
+                .sortByScore();
+
+        return mongoTemplate.find(query, Artigo.class);
+    }
+
+    @Override
+    public List<ArtigoStatusCount> contarArtigosPorStatus() {
+
+        TypedAggregation<Artigo> aggregation =
+                Aggregation
+                        .newAggregation(
+                                Artigo.class,
+                                Aggregation
+                                        .group("status")
+                                        .count()
+                                        .as("quantidade"),
+                                Aggregation
+                                        .project("quantidade")
+                                        .and("status")
+                                        .previousOperation()
+                        );
+        AggregationResults<ArtigoStatusCount> result =
+                mongoTemplate.aggregate(
+                        aggregation,
+                        ArtigoStatusCount.class
+                );
+
+        return result.getMappedResults();
     }
 
 }
