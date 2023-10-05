@@ -5,9 +5,11 @@ import br.com.fosales.springblog.model.ArtigoStatusCount;
 import br.com.fosales.springblog.model.AutorTotalArtigo;
 import br.com.fosales.springblog.service.ArtigoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,6 +25,15 @@ import java.util.List;
 public class ArtigoController {
 
     private final ArtigoService artigoService;
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<String> handleOptimisticLockingFailureException(
+            OptimisticLockingFailureException optimisticLockingFailureException
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body("Erro de concorrência: O Artigo foi atualizado por outro usuário. Por favor, tente novamente!");
+    }
 
     @GetMapping
     public ResponseEntity<List<Artigo>> obterTodos(

@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ public class ArtigoServiceImpl implements ArtigoService {
         return artigoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Artigo obterPorCodigo(String codigo) {
 
@@ -51,6 +53,7 @@ public class ArtigoServiceImpl implements ArtigoService {
                 );
     }
 
+    @Transactional
     @Override
     public Artigo criar(Artigo artigo) {
 
@@ -106,11 +109,13 @@ public class ArtigoServiceImpl implements ArtigoService {
         return mongoTemplate.find(query, Artigo.class);
     }
 
+    @Transactional
     @Override
     public Artigo atualizar(Artigo artigo) {
         return artigoRepository.save(artigo);
     }
 
+    @Transactional
     @Override
     public void atualizar(String codigo, String novaUrl) {
         Query query = new Query(
@@ -126,11 +131,13 @@ public class ArtigoServiceImpl implements ArtigoService {
         mongoTemplate.updateFirst(query, update, Artigo.class);
     }
 
+    @Transactional
     @Override
     public void deleteById(String id) {
         artigoRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void deleteArtigoById(String id) {
         Query query = new Query(

@@ -82,3 +82,20 @@ show collections
 > $pull = exclusão de itens de documentos dentro de um array de um documento.
 
 > $unset = remover as field de um documento
+
+
+## Habilitar suporte a transações
+
+1. adicinar no pom.xml
+
+> spring-boot-starter-data-mongodb-reactive
+
+2. adicionar no model a versão
+
+```java
+    @Version
+    private Long version;
+```
+3. adicionar o anotação @Transactional
+
+4. apartir da versão 4.0 o mongodb suporta transações para banco de dados duplicados.

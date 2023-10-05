@@ -2,6 +2,7 @@ package br.com.fosales.springblog.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +17,9 @@ public class Artigo implements Serializable {
 
     @Id
     private String codigo;
+
+    @Version
+    private Long version;
 
     private String titulo;
 
