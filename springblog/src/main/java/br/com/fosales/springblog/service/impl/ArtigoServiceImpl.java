@@ -8,6 +8,7 @@ import br.com.fosales.springblog.repository.ArtigoRepository;
 import br.com.fosales.springblog.repository.AutorRepository;
 import br.com.fosales.springblog.service.ArtigoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -73,8 +74,36 @@ public class ArtigoServiceImpl implements ArtigoService {
             artigo.setAutor(null);
         }
 
+        Artigo artigoRetorno = null;
+        try {
+            artigoRetorno = artigoRepository.save(artigo);
+        } catch (OptimisticLockingFailureException ex) {
 
-        return artigoRepository.save(artigo);
+            // desenvolver a estratégia
+
+            // 1. recuperar o documento mais recente do banco de dados(coleção Artigo)
+            Artigo atualizado = artigoRepository
+                    .findById(artigo.getCodigo())
+                    .orElse(null);
+
+            if (atualizado != null) {
+                // atualizar os campos desejados
+                atualizado.setTitulo(artigo.getTitulo());
+                atualizado.setTexto(artigo.getTexto());
+                atualizado.setStatus(artigo.getStatus());
+
+                // incrementar a versão
+                atualizado.setVersion(atualizado.getVersion() + 1);
+
+                // tentar salvar
+                artigoRetorno = artigoRepository.save(atualizado);
+            } else {
+                // se o documento não for encontrado tratar o erro
+                throw new RuntimeException("Artigo não encontrado. codigo: " + artigo.getCodigo());
+            }
+        }
+
+        return artigoRetorno;
     }
 
     @Override
